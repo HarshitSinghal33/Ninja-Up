@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="apple-touch-icon" sizes="180x180" href="/ninjaUpfavicon/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/ninjaUpfavicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/ninjaUpfavicon/favicon-16x16.png">
-    <link rel="manifest" href="/ninjaUpfavicon/site.webmanifest">
-    <link rel="mask-icon" href="/ninjaUpfavicon/safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="apple-touch-icon" sizes="180x180" href="./ninjaUpfavicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./ninjaUpfavicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./ninjaUpfavicon/favicon-16x16.png">
+    <link rel="manifest" href="./ninjaUpfavicon/site.webmanifest">
+    <link rel="mask-icon" href="./ninjaUpfavicon/safari-pinned-tab.svg" color="#5bbad5">
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
     <title>Document</title>
@@ -26,7 +26,7 @@
             height: 100vh;
             width: 100vw;
             overflow: hidden;
-            background-image: url("/images/night2d_5.jpg");
+            background-image: url("./images/night2d_5.jpg");
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -35,7 +35,7 @@
             height: 200vh;
             width: 30px;
             position: relative;
-            background: url("/images/image2.jpg") repeat-y 50% 0;
+            background: url("./images/image2.jpg") repeat-y 50% 0;
             animation: move 3600s linear infinite;
             border-right: 3px solid black;
             border-left: 3px solid black;
@@ -49,7 +49,7 @@
             width: 30px;
             position: absolute;
             top: -30%;
-            background: url("/images/shuriken2.png") no-repeat center ;
+            background: url("./images/shuriken2.png") no-repeat center ;
             background-size: cover;
             animation: blademove linear;
         }
@@ -63,7 +63,7 @@
             position: absolute;
             top: 25%;
             transform: rotate(270deg);
-            background-image: url("/images/running_ninja_sprits2.png");
+            background-image: url("./images/running_ninja_sprits2.png");
             animation: run 450ms steps(6) infinite;
             overflow: hidden;
         }
@@ -142,7 +142,7 @@
     <div id="box">
         <div id="score">Score: <span id="firstScore">0</span>m</div>
         <div id="gameStart">
-            <img src="/images/mobile_img_NU.jpg"  alt="">
+            <img src="./images/mobile_img_NU.jpg"  alt="">
             <div class="button" id="start">Click to start</div>
         </div>
         <div class="pillars"></div>
@@ -170,13 +170,13 @@
         })
         let startImg = document.querySelector("#gameStart img")
         if(window.innerWidth >= 840){
-            startImg.src = "../images/ninjaUP_1000.jpg"
+            startImg.src = "./images/ninjaUP_1000.jpg"
         }
         window.addEventListener("resize", ()=>{
             if(window.innerWidth >= 840){
-                startImg.src = "../images/ninjaUP_1000.jpg"
+                startImg.src = "./images/ninjaUP_1000.jpg"
             }else{
-                startImg.src = "../images/mobile_img_NU.jpg"
+                startImg.src = "./images/mobile_img_NU.jpg"
             }
         })
         
