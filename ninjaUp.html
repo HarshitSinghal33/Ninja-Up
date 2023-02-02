@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" sizes="180x180" href="../ninjaUpfavicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../ninjaUpfavicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../ninjaUpfavicon/favicon-16x16.png">
+    <link rel="manifest" href="../ninjaUpfavicon/site.webmanifest">
+    <link rel="mask-icon" href="../ninjaUpfavicon/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        #box{
+            background-color: black;
+            display: flex;
+            justify-content: space-around;
+            position: relative;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            background-image: url("../images/night2d_5.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        .pillars{
+            height: 200vh;
+            width: 30px;
+            position: relative;
+            background: url("../images/image2.jpg") repeat-y 50% 0;
+            animation: move 3600s linear infinite;
+            border-right: 3px solid black;
+            border-left: 3px solid black;
+            animation-play-state: paused;
+        }
+        @keyframes move {
+            100%{background-position-y: 120000vh;}
+        }
+        .blade{
+            height: 30px;
+            width: 30px;
+            position: absolute;
+            top: -30%;
+            background: url("../images/shuriken2.png") no-repeat center ;
+            background-size: cover;
+            animation: blademove linear;
+        }
+        @keyframes blademove {
+            100%{top: 120%;}
+        }
+
+        #ninja{
+            height: 45px;
+            width: 35px;
+            position: absolute;
+            top: 25%;
+            transform: rotate(270deg);
+            background-image: url("../images/running_ninja_sprits2.png");
+            animation: run 450ms steps(6) infinite;
+            overflow: hidden;
+        }
+        #ninja.stop{
+            animation-play-state: paused;
+        }
+        @keyframes run {
+            0%{
+                background-position: 0px 0;
+            }
+            100%{
+                background-position: -217px 0;
+            }
+        }
+
+        #gameEnd, #gameStart{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            position: absolute;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(70, 70, 70, 0.574);
+            color: white;
+            font-size: 24px;
+            font-family:Arial, Helvetica, sans-serif;
+            font-weight: 700;
+            text-align: center;
+            z-index: 100;
+            display: none;
+        }
+        #gameStart{
+            display: flex;
+        }
+        #gameStart img{
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            z-index: -1;
+        }
+        .button{
+            background-color: #1951fa;
+            padding: 9px;
+            border-radius: 9px;
+            cursor: pointer;
+            color: #fff;
+            -webkit-box-shadow: -2px 2px 15px 3px rgba(0,0,0,0.75);
+            -moz-box-shadow: -2px 2px 15px 3px rgba(0,0,0,0.75);
+            box-shadow: -2px 2px 15px 3px rgba(0,0,0,0.75);
+        }
+        #restart{
+            margin-top: 12px;
+        }
+        #score{
+            position: absolute;
+            top: 0;
+            font-size: clamp(1rem,2vw,3rem);
+            font-weight: 700;
+            color: white;
+            padding: 9px;
+            font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        #scoBo{
+            background-color: aqua;
+            padding: 9px;
+            border-radius: 12px;
+            text-shadow: 1px 2px 0px rgba(240,145,145,0.6);
+            -webkit-box-shadow: -2px 2px 15px 3px rgba(0,0,0,0.75);
+            -moz-box-shadow: -2px 2px 15px 3px rgba(0,0,0,0.75);
+            box-shadow: -2px 2px 15px 3px rgba(0,0,0,0.75);
+        }
+    </style>    
+</head>
+<body>
+    <div id="box">
+        <div id="score">Score: <span id="firstScore">0</span>m</div>
+        <div id="gameStart">
+            <img src="../images/mobile_img_NU.jpg"  alt="">
+            <div class="button" id="start">Click to start</div>
+        </div>
+        <div class="pillars"></div>
+        <div class="pillars"></div>
+        <div id="gameEnd">
+            <div id="scoBo" >Score: <span id="finalScore">0</span>m</div>
+            <div class="button" id="restart">Restart</div>
+        </div>
+    </div>
+
+    <script>
+        console.time()
+        let body = document.querySelector("body");
+        var startingX, startingY, movingX, movingY;
+        body.addEventListener("touchstart", (evt)=>{
+            startingX = evt.touches[0].clientX;
+            startingY = evt.touches[0].clientY;
+        })
+        body.addEventListener("touchmove", (evt)=>{
+            movingX = evt.touches[0].clientX;
+            movingY = evt.touches[0].clientY;
+        })
+        body.addEventListener("touchend", ()=>{
+            ninjatouchMove()
+        })
+        let startImg = document.querySelector("#gameStart img")
+        if(window.innerWidth >= 840){
+            startImg.src = "../images/ninjaUP_1000.jpg"
+        }
+        window.addEventListener("resize", ()=>{
+            if(window.innerWidth >= 840){
+                startImg.src = "../images/ninjaUP_1000.jpg"
+            }else{
+                startImg.src = "../images/mobile_img_NU.jpg"
+            }
+        })
+        
+        const pillars = document.querySelectorAll(".pillars");
+        const start = document.getElementById("start");
+
+        start.addEventListener("click",()=> {
+            createBlade();
+            
+            document.getElementById("gameStart").style.display = "none";
+            ninja.classList.remove("stop")
+            pillars.forEach(pillar => {
+                pillar.style.animationPlayState = "running";
+            });
+        })
+
+        let left = '-36px';
+        let right = '27px';
+        function player(){
+            const ninja = document.createElement("div");
+            ninja.setAttribute("id", "ninja");
+            ninja.style.left = left ;
+            pillars[0].appendChild(ninja);
+            ninja.classList.add("stop")
+        }
+        player()
+        
+
+        var stop,score = 0,blades,sec = 9;
+        function createBlade(){
+            const blade = document.createElement("div");
+            blade.setAttribute("class","blade");
+            const bladeDirection = [-33, 27]
+            const randomPillars = Math.floor(Math.random() * pillars.length);
+            pillars[randomPillars].appendChild(blade);
+            const randomDirection = Math.floor(Math.random() * bladeDirection.length);
+            blade.style.left = bladeDirection[randomDirection] + "px";
+            
+            score++;
+            document.getElementById("firstScore").textContent = score;
+            if(score  <= 25){
+                stop = setTimeout(createBlade,1800);
+            }else if(score >= 25){
+                stop = setTimeout(createBlade,1200);
+                sec = 6;
+            }else if(score >= 50){
+                stop = setTimeout(createBlade,10);
+                sec = 4.5;
+            }
+            blade.style.animationDuration = `${sec}s`;
+        }
+
+
+        document.addEventListener("keydown", (e) =>{
+            e.preventDefault();
+            ninjaMove(e)
+        })
+
+        function ninjatouchMove(){
+            let ninjaPo = ninja.getBoundingClientRect();
+            if(startingY+100 < movingY && ninjaPo.top+window.innerHeight/5 <=  window.innerHeight){
+                ninja.style.top = ninjaPo.top + 30 + "px"
+            }else if(startingY-100 > movingY  && ninjaPo.top >=  window.innerHeight/5){
+                ninja.style.top = ninjaPo.top - 30 + "px"
+            }
+
+            if(startingX+100 < movingX && pillars[0].contains(ninja) && ninja.style.left == left){
+                ninja.style.left = right;
+                ninja.style.transform = "rotate(90deg) scaleX(-1)"
+            }else if(startingX-100 > movingX && pillars[0].contains(ninja) && ninja.style.left == right){
+                ninja.style.left = left;
+                ninja.style.transform = "rotate(270deg) scaleX(1)"
+            } else if(startingX+100 < movingX && pillars[0].contains(ninja) && ninja.style.left == right){
+                ninja.style.left = left;
+                pillars[1].appendChild(ninja);
+                ninja.style.transform = "rotate(270deg) scaleX(1)"
+            } else if(startingX-100 > movingX && pillars[1].contains(ninja) && ninja.style.left == left){
+                ninja.style.left = right;
+                pillars[0].appendChild(ninja);
+                ninja.style.transform = "rotate(90deg) scaleX(-1)"
+            } else if(startingX+100 < movingX && pillars[1].contains(ninja) && ninja.style.left == left){
+                ninja.style.left = right;
+                ninja.style.transform = "rotate(90deg) scaleX(-1)"
+            }else if(startingX-100 > movingX && pillars[1].contains(ninja) && ninja.style.left == right){
+                ninja.style.left = left;
+                ninja.style.transform = "rotate(270deg) scaleX(1)"
+            }
+        }
+        function ninjaMove(e){
+            let ninjaPo = ninja.getBoundingClientRect();
+            if(e.key == "ArrowUp" && ninjaPo.top >=  window.innerHeight/5){
+                ninja.style.top = ninjaPo.top - 30 + "px"
+            } else if(e.key == "ArrowDown" && ninjaPo.top+window.innerHeight/5 <=  window.innerHeight){
+                ninja.style.top = ninjaPo.top + 30 + "px"
+            }
+            
+            if(e.key == "ArrowRight" && pillars[0].contains(ninja) && ninja.style.left == left){
+                ninja.style.left = right;
+                ninja.style.transform = "rotate(90deg) scaleX(-1)"
+            } else if(e.key == "ArrowLeft" && pillars[0].contains(ninja) && ninja.style.left == right){
+                ninja.style.left = left;
+                ninja.style.transform = "rotate(270deg) scaleX(1)"
+            } else if(e.key == "ArrowRight" && pillars[0].contains(ninja) && ninja.style.left == right){
+                ninja.style.left = left;
+                pillars[1].appendChild(ninja);
+                ninja.style.transform = "rotate(270deg) scaleX(1)"
+            } else if(e.key == "ArrowLeft" && pillars[1].contains(ninja) && ninja.style.left == left){
+                ninja.style.left = right;
+                pillars[0].appendChild(ninja);
+                ninja.style.transform = "rotate(90deg) scaleX(-1)"
+            } else if(e.key == "ArrowRight" && pillars[1].contains(ninja) && ninja.style.left == left){
+                ninja.style.left = right;
+                ninja.style.transform = "rotate(90deg) scaleX(-1)"
+            }else if(e.key == "ArrowLeft" && pillars[1].contains(ninja) && ninja.style.left == right){
+                ninja.style.left = left;
+                ninja.style.transform = "rotate(270deg) scaleX(1)"
+            }
+        }
+
+        
+        
+
+
+        let ninja = document.getElementById("ninja");
+        function getPosition(){
+            blades = document.querySelectorAll(".blade"); // for regular update
+            const ninjaPo = ninja.getBoundingClientRect(); // for ninja x and y
+            blades.forEach(blade => { //for every blade
+                const blaPo = blade.getBoundingClientRect();
+                let ninjaX = Math.floor(ninjaPo.x);
+                let ninjaY = Math.floor(ninjaPo.y);
+                let bladeX = Math.floor(blaPo.x);
+                let bladeY = Math.floor(blaPo.y);
+
+                
+                function difference(a,b){
+                    let y = Math.abs(a-b)
+                    if( y <= 10 && Math.floor(blaPo.y) + Math.floor(blaPo.height) >= Math.floor(ninjaPo.y) +10 && Math.floor(blaPo.y) + 15 <= Math.floor(ninjaPo.y) + Math.floor(ninjaPo.width)){
+                        gameEnd();
+                    }
+                }
+                difference(ninjaX,bladeX)
+                if(blaPo.top >= window.innerHeight) blade.remove();
+            });
+        }
+        setInterval(getPosition, 10);
+
+        const gameendScreen = document.getElementById("gameEnd")
+        function gameEnd(){
+            blades.forEach(blade => {
+                blade.style.animationPlayState = "paused";
+            });
+            pillars.forEach(pillar => {
+                pillar.style.animationPlayState = "paused"
+            })
+            clearTimeout(stop)
+            ninja.classList.add("stop");
+            gameendScreen.style.display = "flex";
+            document.getElementById("finalScore").innerText= score;
+            left = null;
+            right = null;
+        }
+
+        document.getElementById("restart").addEventListener("click", ()=>{
+            restart()
+        })
+        function restart(){
+            gameendScreen.style.display = "none";
+            left = "-36px";
+            right = "27px";
+            blades.forEach(blade => {
+                blade.remove();
+            });
+            pillars.forEach(pillar => {
+                pillar.style.animationPlayState = "running";
+            })
+            ninja.classList.remove("stop");
+            createBlade();
+            score = 0;
+            document.getElementById("firstScore").textContent = "0";
+            document.getElementById("finalScore").innerText= "0";
+        }
+        console.timeEnd()
+    </script>
+</body>
+</html>
